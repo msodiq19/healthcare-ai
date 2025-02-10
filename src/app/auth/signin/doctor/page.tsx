@@ -31,7 +31,7 @@ export default function DoctorSignIn() {
 
   const onSubmit = async (data: SignInValues) => {
     try {
-      
+      console.log(data);
     } catch (error) {
       setError(String(error));
     }

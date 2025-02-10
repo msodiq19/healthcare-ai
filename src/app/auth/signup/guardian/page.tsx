@@ -36,8 +36,12 @@ export default function GuardianSignUp() {
       // Replace this with your sign-up logic
       console.log(data);
       router.push('/dashboard/guardian');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     }
   };
 

@@ -1,17 +1,16 @@
+'use client'
 import React from 'react';
+import { useEffect, useState } from 'react';
 import { Activity, Heart, Calendar, FileText, Bell } from 'lucide-react';
-import { auth } from '../lib/auth';
 
-export function PatientDashboard() {
-  const [profile, setProfile] = React.useState<{ fullName: string } | null>(null);
+const PatientDashboard: React.FC = () => {
+  const [profile, setProfile] = useState<{ fullName: string } | null>(null);
 
-  React.useEffect(() => {
-    async function getProfile() {
-      const user = await auth.getUser();
-      if (user) {
-        setProfile({ fullName: user.fullName });
-      }
-    }
+  useEffect(() => {
+    const getProfile = async () => {
+      const profileData = await fetchProfile();
+      setProfile(profileData);
+    };
     getProfile();
   }, []);
 
@@ -46,7 +45,7 @@ export function PatientDashboard() {
                   <div className="flex-shrink-0">
                     <Heart className="h-6 w-6 text-gray-400" />
                   </div>
-                  <div className="ml-5 w-0 flex-1">
+                  <div className="ml-5 w-0 flex-1"></div>
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">
                         Health Status
@@ -118,6 +117,12 @@ export function PatientDashboard() {
           </div>
         </div>
       </div>
-    </div>
   );
-}
+};
+
+const fetchProfile = async () => {
+  // Replace this with your actual data fetching logic
+  return { fullName: 'John Doe' };
+};
+
+export default PatientDashboard;

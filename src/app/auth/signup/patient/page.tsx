@@ -36,8 +36,12 @@ export default function PatientSignUp() {
       // Replace this with your sign-up logic
       console.log('Sign up data:', data);
       router.push('/dashboard/patient');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
