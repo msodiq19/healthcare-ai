@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Activity } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,8 +33,12 @@ export default function GuardianSignIn() {
       // Replace this with your authentication logic
       console.log('Sign in data:', data);
       router.push('/dashboard/guardian');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
