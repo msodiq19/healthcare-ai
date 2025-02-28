@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
 import { getToken, setToken, removeToken } from '../lib/utils';
@@ -43,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await apiLogin(payload);
       setToken('accessToken', data.token);
       setToken('user', JSON.stringify(data.user));
+      console.log('User:', data);
       setUser(data.user);
     } catch (error) {
       console.error('Login error:', error);

@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import { getAllPatients, getAssignedPatients } from '@/services';
 import { Patient } from '../types';
