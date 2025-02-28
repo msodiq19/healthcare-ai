@@ -1,62 +1,98 @@
-"use client"
-import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react'
-import { getToken, setToken } from '@/lib/utils';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { User } from '../types';
+import { getToken, setToken, removeToken } from '../lib/utils';
+import { login as apiLogin, register as apiRegister, ILoginPayload, IRegisterPayload } from '@/services';
 
-type User = {
-    email: string;
-    isLoggedIn: boolean
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (payload: ILoginPayload) => Promise<void>;
+  register: (payload: IRegisterPayload) => Promise<void>;
+  logout: () => void;
+  isAuthenticated: boolean;
 }
 
-type AuthContextType = {
-    user: User
-    authenticateUser: (data: {email: string, token: string}) => void;
-}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-    const [user, setUser] = useState({
-        email: "",
-        isLoggedIn: false
-    })
-    const router = useRouter();
-
-    useEffect(() => {
-        const token = getToken("accessToken")
-        if(token){
-            setUser((prev) => ({...prev, isLoggedIn: true}))
-        }else{
-            router.push('/')
-        }
-
-    }, [router])
-
-    const authenticateUser = (data: {email: string, token: string}) => {
-
-        setToken('accessToken', data.token)
-
-        setUser({
-            email: data.email,
-            isLoggedIn: true
-        })
-        router.push('/main')
-    }
-
+  useEffect(() => {
+    // Check if user is logged in
+    const token = getToken('accessToken');
+    const userStr = getToken('user');
     
-    return (
-    <AuthContext.Provider value={{user, authenticateUser}}>
-        {children}
+    if (token && userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (error) {
+        console.error('Failed to parse user data', error);
+        removeToken('accessToken');
+        removeToken('user');
+      }
+    }
+    
+    setLoading(false);
+  }, []);
+
+  const login = async (payload: ILoginPayload) => {
+    setLoading(true);
+    try {
+      const data = await apiLogin(payload);
+      setToken('accessToken', data.token);
+      setToken('user', JSON.stringify(data.user));
+      setUser(data.user);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (payload: IRegisterPayload) => {
+    setLoading(true);
+    try {
+      const data = await apiRegister(payload);
+      setToken('accessToken', data.token);
+      setToken('user', JSON.stringify(data.user));
+      setUser(data.user);
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = () => {
+    removeToken('accessToken');
+    removeToken('user');
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        isAuthenticated: !!user,
+      }}
+    >
+      {children}
     </AuthContext.Provider>
-    )
-}
+  );
+};
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-
-    if(!context){
-        throw new Error("useAuth must be within AuthProvider")
-    }
-
-    return context
-}
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
