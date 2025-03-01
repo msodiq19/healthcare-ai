@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
 import { getToken, setToken, removeToken } from '../lib/utils';
 import { login as apiLogin, register as apiRegister, ILoginPayload, IRegisterPayload } from '@/services';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -18,6 +19,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     // Check if user is logged in
@@ -43,9 +46,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await apiLogin(payload);
       setToken('accessToken', data.token);
-      setToken('user', JSON.stringify(data.user));
-      console.log('User:', data);
-      setUser(data.user);
+      setToken('user', JSON.stringify(data.other));
+      setUser(data.other);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -59,8 +61,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await apiRegister(payload);
       setToken('accessToken', data.token);
-      setToken('user', JSON.stringify(data.user));
-      setUser(data.user);
+      setToken('user', JSON.stringify(data.other));
+      setUser(data.other);
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
@@ -70,7 +72,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    const userType = user?.type?.toLowerCase();
     removeToken('accessToken');
+    
+    // Redirect based on user type
+    if (userType === 'patient') {
+      router.push('/auth/signin/patient');
+    } else if (userType === 'doctor') {
+      router.push('/auth/signin/doctor');
+    } else if (userType === 'guardian') {
+      router.push('/auth/signin/guardian');
+    } else {
+      router.push('/'); // Default fallback
+    }
+
     removeToken('user');
     setUser(null);
   };
