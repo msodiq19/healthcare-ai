@@ -135,16 +135,16 @@ export const getAllPatients = async () => {
   return response.json();
 };
 
-export const checkSymptoms = async (patientId: string, symptoms: string) => {
+export const checkSymptoms = async (symptoms: string) => {
   const token = getToken("accessToken");
 
-  const response = await fetch(`${baseUrl}/api/v1/secure/check-symptoms`, {
+  const response = await fetch(`${baseUrl}/api/v1/secure/treatment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ patient_id: patientId, symptoms }),
+    body: JSON.stringify({ symptoms }),
   }).then((res) => res.json());
 
   if (response.code !== 200) {
@@ -228,6 +228,25 @@ export const getAllSymptoms = async () => {
   if (!response.ok) {
     const errorResponse = await response.json();
     throw new Error(errorResponse.message || "Failed to fetch symptoms");
+  }
+
+  return response.json();
+};
+
+export const getAssignedPatientsForGuardian = async () => {
+  const token = getToken("accessToken");
+
+  const response = await fetch(`${baseUrl}/api/v1/secure/assigned-patients`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorResponse = await response.json();
+    throw new Error(errorResponse.message || "Failed to fetch assigned patients");
   }
 
   return response.json();

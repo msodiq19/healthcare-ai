@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Home, Users, Clipboard, UserPlus, Shield, Activity, LogOut, User } from 'lucide-react';
+import { Home, Users, Clipboard, UserPlus, Activity, LogOut, User } from 'lucide-react';
 
 interface SidebarProps {
     user: {
@@ -38,13 +38,13 @@ const Sidebar: FC<SidebarProps> = ({ user, logout }) => {
                         {user?.type === 'doctor' && (
                             <>
                                 <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
+                                    <a href="/dashboard/doctor/my-patients" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
                                         <Users className="h-5 w-5 mr-3" />
                                         My Patients
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
+                                    <a href="/dashboard/doctor/prescriptions" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
                                         <Clipboard className="h-5 w-5 mr-3" />
                                         Prescriptions
                                     </a>
@@ -52,50 +52,33 @@ const Sidebar: FC<SidebarProps> = ({ user, logout }) => {
                             </>
                         )}
                         
-                        {/* Rest of the conditional renders remain the same */}
-                        {user?.type === 'admin' && (
-                            <>
-                                <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
-                                        <Users className="h-5 w-5 mr-3" />
-                                        All Patients
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
-                                        <UserPlus className="h-5 w-5 mr-3" />
-                                        Doctors
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
-                                        <Shield className="h-5 w-5 mr-3" />
-                                        Guardians
-                                    </a>
-                                </li>
-                            </>
-                        )}
 
                         {user?.type === 'patient' && (
                             <>
                                 <li>
-                                    <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
+                                    <a href="/dashboard/patient/doctors" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
+                                        <UserPlus className="h-5 w-5 mr-3" />
+                                        All Doctors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/dashboard/patient/symptoms" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
                                         <Activity className="h-5 w-5 mr-3" />
                                         My Symptoms
                                     </a>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
                                         <Clipboard className="h-5 w-5 mr-3" />
                                         Prescriptions
                                     </a>
-                                </li>
+                                </li> */}
                             </>
                         )}
 
                         {user?.type === 'guardian' && (
                             <li>
-                                <a href="#" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
+                                <a href="/dashboard/guardian/assigned-patients" className="flex items-center p-2 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-600">
                                     <Users className="h-5 w-5 mr-3" />
                                     My Patients
                                 </a>
