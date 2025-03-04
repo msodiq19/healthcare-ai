@@ -1,14 +1,13 @@
-'use client'
-import React from 'react';
-import { useAuth } from '@/context/auth-context';
-import Sidebar from '@/components/Sidebar';
-import DashboardCards from '@/components/DashboardCards';
-import PatientList from '@/components/PatientList';
+"use client";
+import React from "react";
+import { useAuth } from "@/context/auth-context";
+import Sidebar from "@/components/Sidebar";
+import DashboardCards from "@/components/DashboardCards";
+// import PatientList from "@/components/PatientList";
+import AssignedPatients from "@/components/AssignedPatients"; // Import AssignedPatients component
 
 const DoctorDashboard: React.FC = () => {
-    const { user, logout } = useAuth();
-
-
+  const { user, logout } = useAuth();
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -22,18 +21,20 @@ const DoctorDashboard: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-800">Dashboard</h2>
           </div>
         </header>
-      
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
-      <DashboardCards />
-      <div className="space-y-6">
-      <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-3">My Patients</h3>
-            <PatientList type="assigned" />
+
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
+          <DashboardCards />
+          <div className="space-y-6">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3">
+                  My Patients
+                </h3>
+                <AssignedPatients /> {/* Use AssignedPatients component */}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      </div>
       </div>
     </div>
   );

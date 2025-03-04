@@ -48,6 +48,7 @@ export default function DoctorSignupForm() {
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
         setError("An unexpected error occurred");
       }

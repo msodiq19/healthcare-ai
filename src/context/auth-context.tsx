@@ -73,7 +73,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     const userType = user?.type?.toLowerCase();
-    removeToken('accessToken');
     
     // Redirect based on user type
     if (userType === 'patient') {
@@ -85,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       router.push('/'); // Default fallback
     }
-
+    removeToken('accessToken');
     removeToken('user');
     setUser(null);
   };

@@ -17,8 +17,8 @@ export default function CheckSymptomsPage() {
     setIsLoading(true);
     try {
       const res = await checkSymptoms(symptoms);
-        setResponse(res.data);
-        toast.success("Symptoms checked successfully");
+      setResponse(res);
+      toast.success("Symptoms checked successfully");
     } catch (error) {
       console.error("Error checking symptoms:", error);
       toast.error("Failed to check symptoms");
@@ -55,9 +55,19 @@ export default function CheckSymptomsPage() {
             >
               {isLoading ? "Checking..." : "Check Symptoms"}
             </Button>
+            {isLoading && (
+              <div className="mt-4 text-center">
+                <p>Loading...</p>
+              </div>
+            )}
+            {!isLoading && !response && (
+              <div className="mt-4 text-center">
+                <p>No symptoms checked yet.</p>
+              </div>
+            )}
             {response && (
               <div className="mt-4 p-4 bg-white border rounded">
-                <h3 className="text-lg font-semibold">Response:</h3>
+                <h3 className="text-lg font-semibold">Possible Conditions:</h3>
                 <p>{response}</p>
               </div>
             )}

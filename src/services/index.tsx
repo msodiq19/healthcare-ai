@@ -174,8 +174,7 @@ export const getAllDoctors = async () => {
 };
 
 export const assignDoctorToPatient = async (
-  doctorId: string,
-  patientId: string
+  doctorId: string
 ) => {
   const token = getToken("accessToken");
 
@@ -185,7 +184,7 @@ export const assignDoctorToPatient = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ doctor_id: doctorId, patient_id: patientId }),
+    body: JSON.stringify({ doctor_id: doctorId }),
   }).then((res) => res.json());
 
   if (response.code !== 200) {

@@ -23,6 +23,9 @@ export default function PrescriptionsPage() {
   const [selectedPatient, setSelectedPatient] = useState<string>("");
   const [symptoms, setSymptoms] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingPatients, setIsFetchingPatients] = useState(true);
+  const [response, setResponse] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -32,6 +35,8 @@ export default function PrescriptionsPage() {
       } catch (error) {
         console.error("Error fetching patients:", error);
         toast.error("Failed to fetch patients");
+      } finally {
+        setIsFetchingPatients(false);
       }
     };
 
@@ -44,16 +49,19 @@ export default function PrescriptionsPage() {
       return;
     }
     setIsLoading(true);
+    setError(null);
     try {
       const data = await createPrescription(selectedPatient, symptoms);
-      if (data.status === "SUCCESS") {
-        toast.success("Prescription created successfully");
-      } else {
-        toast.error("Failed to create prescription");
-      }
+      setResponse(data);
+      toast.success("Prescription created successfully");
     } catch (error) {
       console.error("Error creating prescription:", error);
-      toast.error("Failed to create prescription");
+      setError(
+        error instanceof Error ? error.message : "Failed to create prescription"
+      );
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create prescription"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -74,31 +82,55 @@ export default function PrescriptionsPage() {
 
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
           <div className="p-6">
-            <select
-              value={selectedPatient}
-              onChange={(e) => setSelectedPatient(e.target.value)}
-              className="w-full p-3 border rounded mb-4"
-            >
-              <option value="">Select Patient</option>
-              {patients.map((patient) => (
-                <option key={patient._id} value={patient.patient_id._id}>
-                  {patient.patient_id.username} ({patient.patient_id.email})
-                </option>
-              ))}
-            </select>
-            <textarea
-              value={symptoms}
-              onChange={(e) => setSymptoms(e.target.value)}
-              placeholder="Enter symptoms"
-              className="w-full p-3 border rounded mb-4"
-            />
-            <Button
-              onClick={handleCreatePrescription}
-              className="mt-4"
-              disabled={isLoading}
-            >
-              {isLoading ? "Creating..." : "Create Prescription"}
-            </Button>
+            {isFetchingPatients ? (
+              <div className="text-center">Loading patients...</div>
+            ) : patients.length === 0 ? (
+              <div className="text-center text-gray-500">
+                No patients assigned yet
+              </div>
+            ) : (
+              <>
+                <select
+                  value={selectedPatient}
+                  onChange={(e) => setSelectedPatient(e.target.value)}
+                  className="w-full p-3 border rounded mb-4"
+                >
+                  <option value="">Select Patient</option>
+                  {patients.map((patient) => (
+                    <option key={patient._id} value={patient.patient_id._id}>
+                      {patient.patient_id.username} ({patient.patient_id.email})
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  value={symptoms}
+                  onChange={(e) => setSymptoms(e.target.value)}
+                  placeholder="Enter symptoms"
+                  className="w-full p-3 border rounded mb-4"
+                />
+                <Button
+                  onClick={handleCreatePrescription}
+                  className="mt-4"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Creating..." : "Create Prescription"}
+                </Button>
+              </>
+            )}
+          </div>
+          <div className="p-6">
+            {isLoading ? (
+              <div className="text-center">awaiting prescription...</div>
+            ) : error ? (
+              <div className="text-center text-red-500">{error}</div>
+            ) : response ? (
+              <div className="bg-white py-2 px-4">
+                <h3>Prescriptions:</h3>
+                {response}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">No Prescription yet</div>
+            )}
           </div>
         </div>
       </div>

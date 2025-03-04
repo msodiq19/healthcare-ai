@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Activity, ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -7,8 +7,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from 'react-hot-toast';
-import { useAuth } from '@/context/auth-context';
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/context/auth-context";
 
 const signUpSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -48,6 +48,7 @@ export default function PatientSignupForm() {
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
         setError("An unknown error occurred");
       }
@@ -133,4 +134,4 @@ export default function PatientSignupForm() {
       </div>
     </div>
   );
-} 
+}

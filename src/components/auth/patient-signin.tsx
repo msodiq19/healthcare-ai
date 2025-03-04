@@ -47,6 +47,7 @@ export default function PatientSigninForm() {
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
+          toast.error(error.message);
         } else {
           setError("An unknown error occurred");
         }

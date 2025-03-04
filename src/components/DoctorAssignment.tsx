@@ -8,7 +8,6 @@ interface DoctorAssignmentProps {
 }
 
 const DoctorAssignment: React.FC<DoctorAssignmentProps> = ({ 
-  patientId,
   onAssignmentComplete 
 }) => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -46,7 +45,7 @@ const DoctorAssignment: React.FC<DoctorAssignmentProps> = ({
     setSuccess('');
     
     try {
-      await assignDoctorToPatient(selectedDoctor, patientId);
+      await assignDoctorToPatient(selectedDoctor);
       setSuccess('Doctor assigned successfully');
       if (onAssignmentComplete) {
         onAssignmentComplete();
